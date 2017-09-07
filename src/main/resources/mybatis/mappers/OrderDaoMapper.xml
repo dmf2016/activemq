@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC   
+    "-//mybatis.org//DTD Mapper 3.0//EN"  
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.demo.dao.IOrderDao">
+	<select id="getOrderCount" resultType="int">  
+    <![CDATA[ 
+        select count(1) from orders 
+    ]]>
+	</select>
+	<insert id="insert" parameterType="com.demo.model.Orders">
+		insert into ORDERS (ID, COMPANY_ID, CHARGE,
+		STATE, REMARK)
+		values
+		(#{id,jdbcType=DECIMAL}, #{companyId,jdbcType=VARCHAR},
+		#{charge,jdbcType=DECIMAL},
+		#{state,jdbcType=DECIMAL},
+		#{remark,jdbcType=VARCHAR})
+		<selectKey keyProperty="id" resultType="BigDecimal" order="BEFORE">
+			SELECT ORDERS_SEQ.nextval as id from dual
+		</selectKey>
+	</insert>
+</mapper>
