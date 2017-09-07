@@ -1,9 +1,6 @@
 package com.redis;
 
-import java.util.Iterator;
-
 import javax.annotation.Resource;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,22 +25,6 @@ public class TestRedisTemplate {
 	private RedisTemplate<String, Object> redisTemplate;
 
 	/**
-	 * 从右边增加 TODO
-	 * @Date:Sep 7, 2017
-	 * @Author dmf
-	 */
-	@Test
-	public void addRightLink() {
-		// 添加 一个 list 列表
-		ListOperations<String, Object> list = redisTemplate.opsForList();
-		list.rightPush("lpList", "1");
-		list.rightPush("lpList", "2");
-		for (int i = 0; i < list.size("lpList"); i++) {
-			String str = (String) list.index("lpList", i);
-			System.out.println(str);
-		}
-	}
-	/**
 	 * 从左边增加 TODO
 	 * @Date:Sep 7, 2017
 	 * @Author dmf
@@ -52,8 +33,9 @@ public class TestRedisTemplate {
 	public void addLeftLink() {
 		// 添加 一个 list 列表
 		ListOperations<String, Object> list = redisTemplate.opsForList();
-		list.leftPush("lpList", "a");
-		list.leftPush("lpList", "b");
+		for (int i = 0; i < 10; i++) {
+			list.leftPush("lpList", "a" + i);
+		}
 		// 输出 list
 		for (int i = 0; i < list.size("lpList"); i++) {
 			String str = (String) list.index("lpList", i);
@@ -69,21 +51,22 @@ public class TestRedisTemplate {
 	public void popLeftLink() {
 		// 添加 一个 list 列表
 		ListOperations<String, Object> list = redisTemplate.opsForList();
+		String key = "lpList";
 		// 输出 list
-		for (int i = 0; i < list.size("lpList"); i++) {
-			String str = (String) list.index("lpList", i);
+		for (int i = 0; i < list.size(key); i++) {
+			String str = (String) list.index(key, i);
 			System.out.println("-----1--:" + str);
 		}
-		Iterator it = (Iterator) list.rightPop("lpList");
-		while (it.hasNext()) {
-			String str = (String) it.next();
-			System.out.println("-----2--:" + str);
-			// 出队列
-			list.leftPop("lpList");
+		System.out.println("------------OUT---------------");
+		long length = list.size(key);
+		for (long i = 0; i < length; i++) {
+			String uid = (String) list.rightPop(key);
+			System.out.println(uid);
 		}
 		// 再显示队列数据
-		for (int i = 0; i < list.size("lpList"); i++) {
-			String str = (String) list.index("lpList", i);
+		System.out.println("-----再显示队列数据--:");
+		for (int i = 0; i < list.size(key); i++) {
+			String str = (String) list.index(key, i);
 			System.out.println("-----3--:" + str);
 		}
 	}
